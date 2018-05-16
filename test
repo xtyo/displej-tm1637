@@ -1,4 +1,4 @@
-https://github.com/xtyo/displej-tm1637/commit/9b616d103cd1e2485898f4720fa8242794eb6fdf#include <DallasTemperature.h>
+
 #include <OneWire.h> 
 #include <TM1637.h>
 //#include <VirtualWire.h>
