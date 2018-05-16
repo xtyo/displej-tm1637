@@ -1,0 +1,80 @@
+#include <DallasTemperature.h>
+#include <OneWire.h> 
+#include <TM1637.h>
+//#include <VirtualWire.h>
+
+#define CLK 9//pins definitions for TM1637 and can be changed to other ports
+#define DIO 10
+TM1637 tm1637(CLK,DIO);
+
+
+
+
+
+// nastavení čísla vstupního pinu teplotních čidel
+const int pinCidlaDS = 6;
+// vytvoření instance oneWireDS z knihovny OneWire
+OneWire oneWireDS(pinCidlaDS);
+// vytvoření instance senzoryDS z knihovny DallasTemperature
+DallasTemperature senzoryDS(&oneWireDS);
+
+void setup() {
+
+tm1637.init();
+  tm1637.set(4);//BRIGHT_TYPICAL = 2,BRIGHT_DARKEST = 0,BRIGHTEST = 7;
+
+
+  
+  // komunikace přes sériovou linku rychlostí 9600 baud
+  Serial.begin(9600);
+  // zapnutí komunikace knihovny s teplotním čidlem
+  senzoryDS.begin();
+
+}
+
+void loop() {
+  // načtení informací ze všech připojených čidel na daném pinu
+  senzoryDS.requestTemperatures();
+  // výpis teploty na sériovou linku, při připojení více čidel
+  // na jeden pin můžeme postupně načíst všechny teploty
+  // pomocí změny čísla v závorce (0) - pořadí dle unikátní adresy čidel
+  Serial.print("Teplota cidla 1: ");
+  Serial.print(senzoryDS.getTempCByIndex(0));
+  Serial.println(" stupnu Celsia");
+delay(1000);
+
+    Serial.print("Teplota cidla 2: ");
+  Serial.print(senzoryDS.getTempCByIndex(1));
+  Serial.print(" ");
+  Serial.print(char(176));
+  Serial.println("C");
+  // pauza pro přehlednější výpis
+  delay(1000);
+
+
+
+// int temp = sensors.getTempCByIndex(0);
+   float temp1 = senzoryDS.getTempCByIndex(0);
+
+   int x = temp1 *100; // get rid of decimal point,  x is now temp in 1/100 degrees
+ 
+  for(uint8_t i = 0; i<4;i++){
+    int digit =  x%10; // strip off lowest digit
+    tm1637.display(3-i,digit);
+    x=x/10;
+//    tm1637._PointFlag(B11100011);
+//   tm1637.display(B11100011 Decimal);
+    
+
+    }
+
+
+
+
+
+
+
+  
+
+
+}
